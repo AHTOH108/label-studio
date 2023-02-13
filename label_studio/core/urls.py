@@ -86,7 +86,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('django-rq/', include('django_rq.urls')),
     path('feature-flags/', views.feature_flags, name='feature_flags'),
-    re_path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    re_path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('accounts/', include('allauth.urls')),
 ]
 
 if settings.DEBUG:

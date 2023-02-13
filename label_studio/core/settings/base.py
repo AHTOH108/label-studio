@@ -182,6 +182,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.sites',
     'drf_yasg',
     'corsheaders',
     'django_extensions',
@@ -205,6 +206,11 @@ INSTALLED_APPS = [
     'ml',
     'webhooks',
     'labels_manager',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
@@ -262,7 +268,10 @@ ALLOWED_HOSTS = ['*']
 
 # Auth modules
 AUTH_USER_MODEL = 'users.User'
-AUTHENTICATION_BACKENDS = ['rules.permissions.ObjectPermissionBackend', 'django.contrib.auth.backends.ModelBackend',]
+AUTHENTICATION_BACKENDS = [
+    'allauth.account.auth_backends.AuthenticationBackend',
+    'rules.permissions.ObjectPermissionBackend', 
+    'django.contrib.auth.backends.ModelBackend',]
 USE_USERNAME_FOR_LOGIN = False
 
 DISABLE_SIGNUP_WITHOUT_LINK = get_bool_env('DISABLE_SIGNUP_WITHOUT_LINK', False)
@@ -386,7 +395,7 @@ CSRF_COOKIE_SECURE = bool(int(get_env('CSRF_COOKIE_SECURE', SESSION_COOKIE_SECUR
 CSRF_COOKIE_HTTPONLY = bool(int(get_env('CSRF_COOKIE_HTTPONLY', SESSION_COOKIE_SECURE)))
 
 # Inactivity user sessions
-INACTIVITY_SESSION_TIMEOUT_ENABLED = bool(int(get_env('INACTIVITY_SESSION_TIMEOUT_ENABLED', True)))
+INACTIVITY_SESSION_TIMEOUT_ENABLED = bool(int(get_env('INACTIVITY_SESSION_TIMEOUT_ENABLED', False)))
 # The most time a login will last, regardless of activity
 MAX_SESSION_AGE = int(get_env('MAX_SESSION_AGE', timedelta(days=14).total_seconds()))
 # The most time that can elapse between activity with the server before the user is logged out
@@ -604,3 +613,18 @@ if get_env('STORAGE_TYPE') == "gcs":
     GS_BUCKET_NAME = get_env('STORAGE_GCS_BUCKET_NAME')
     GS_EXPIRATION = timedelta(seconds=int(get_env('STORAGE_GCS_EXPIRATION_SECS', '86400')))
     GS_LOCATION = get_env('STORAGE_GCS_FOLDER', default='')
+
+SITE_ID = 1
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'APP': {
+            'client_id': '918863777495-n7t30tjuuaap3jncoqqhjh68cb74p3o8.apps.googleusercontent.com',
+            'secret': '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',
+            'key': ''
+        }
+    }
+}
